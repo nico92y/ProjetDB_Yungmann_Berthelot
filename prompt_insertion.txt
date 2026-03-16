@@ -1,0 +1,34 @@
+Tu es un générateur de données SQL réalistes pour PostgreSQL.
+
+Contexte :
+Je travaille sur une base de données d'une application web de gestion de répertoire musical pour musiciens.
+Les tables sont :
+- utilisateur(id_utilisateur, email, nom_affiche, date_creation, theme_interface, langue_interface)
+- dossier(id_dossier, nom_dossier, couleur_dossier, date_creation, id_utilisateur, id_dossier_parent)
+- morceau(id_morceau, titre, auteur, style, bpm, tonalite, signature_rythmique, statut_apprentissage, date_ajout, id_utilisateur)
+- dossier_morceau(id_dossier, id_morceau)
+- grille(id_grille, nom_version, id_morceau)
+- mesure(id_grille, numero_mesure, contenu_mesure)
+- analyse(id_analyse, texte_analyse, date_creation, id_utilisateur, id_morceau)
+
+Règles à respecter :
+- 12 utilisateurs réalistes.
+- Chaque utilisateur possède 3 à 5 dossiers.
+- Certains dossiers sont des sous-dossiers d'autres dossiers.
+- Chaque utilisateur possède 8 à 12 morceaux.
+- Un morceau appartient à un seul utilisateur.
+- Un morceau peut être rangé dans plusieurs dossiers.
+- Chaque morceau possède 1 à 2 grilles.
+- Chaque grille contient 8, 12, 16 ou 32 mesures.
+- Une mesure contient une suite d'accords plausible de jazz, pop, funk, rock ou blues.
+- Environ 35 analyses au total.
+- Respecter la contrainte : un utilisateur ne peut écrire qu'une seule analyse par morceau.
+- Les langues possibles sont : fr, en, es.
+- Les thèmes possibles sont : light, dark, sepia.
+- Les statuts possibles sont : a_apprendre, en_cours, maitrise.
+- Les signatures rythmiques possibles sont : 2/4, 3/4, 4/4, 5/4, 6/8, 7/4, 12/8.
+
+Le résultat attendu :
+- uniquement des requêtes INSERT SQL,
+- aucune explication,
+- données cohérentes, variées, et exploitables pour faire des requêtes SQL avancées.

@@ -123,3 +123,104 @@ Identifiant composite : (id_grille, m_nombre).
 # Conclusion
 
 Le modèle conceptuel obtenu correspond aux règles métier identifiées et respecte les exigences de normalisation et de modélisation avancée demandées. Il servira de base pour la génération du MLD et du MPD lors de la seconde partie du projet.
+
+
+# 3. Modèle Logique de Données (MLD)
+
+Le MLD est déduit du MCD en appliquant les règles de transformation MERISE.
+
+Les scripts SQL fournis dans ce dépôt sont désormais écrits en **syntaxe MySQL Workbench / MySQL 8+**.
+
+## 3.1 Relations obtenues
+
+### UTILISATEUR
+- **id_utilisateur** (PK)
+- email (U)
+- nom_affiche
+- date_creation
+- theme_interface
+- langue_interface
+
+### DOSSIER
+- **id_dossier** (PK)
+- nom_dossier
+- couleur_dossier
+- date_creation
+- id_utilisateur (FK → UTILISATEUR.id_utilisateur)
+- id_dossier_parent (FK → DOSSIER.id_dossier)
+
+### MORCEAU
+- **id_morceau** (PK)
+- titre
+- auteur
+- style
+- bpm
+- tonalite
+- signature_rythmique
+- statut_apprentissage
+- date_ajout
+- id_utilisateur (FK → UTILISATEUR.id_utilisateur)
+
+### DOSSIER_MORCEAU
+- **id_dossier** (PK, FK → DOSSIER.id_dossier)
+- **id_morceau** (PK, FK → MORCEAU.id_morceau)
+
+Cette relation traduit l'association plusieurs-à-plusieurs entre DOSSIER et MORCEAU.
+
+### GRILLE
+- **id_grille** (PK)
+- nom_version
+- id_morceau (FK → MORCEAU.id_morceau)
+
+### MESURE
+- **id_grille** (PK, FK → GRILLE.id_grille)
+- **numero_mesure** (PK)
+- contenu_mesure
+
+Cette relation correspond à l'entité faible MESURE, identifiée par la grille et son numéro de mesure.
+
+### ANALYSE
+- **id_analyse** (PK)
+- texte_analyse
+- date_creation
+- id_utilisateur (FK → UTILISATEUR.id_utilisateur)
+- id_morceau (FK → MORCEAU.id_morceau)
+
+Contrainte supplémentaire : **UNIQUE(id_utilisateur, id_morceau)**
+
+Elle garantit qu'un utilisateur ne peut écrire qu'une seule analyse par morceau.
+
+## 3.2 Justification rapide
+
+- Le MLD respecte les cardinalités du MCD.
+- La relation récursive sur DOSSIER est représentée par une clé étrangère sur la même table.
+- L'entité faible MESURE devient une table à clé primaire composée.
+- L'association N-N entre DOSSIER et MORCEAU devient la table d'association DOSSIER_MORCEAU.
+
+# 4. Scénario d'utilisation
+
+## 4.1 Contexte d'utilisation
+
+La base est utilisée par un **musicien** qui souhaite préparer ses séances de travail et organiser son répertoire.
+
+Cette personne utilise l'application pour :
+- ranger ses morceaux dans des dossiers et sous-dossiers ;
+- retrouver rapidement certains morceaux selon leur style, leur tonalité ou leur niveau d'avancement ;
+- consulter les grilles d'accords ;
+- rédiger des analyses personnelles ;
+- obtenir des statistiques simples sur son répertoire.
+
+## 4.2 Données recherchées
+
+Dans ce scénario, l'utilisateur veut notamment pouvoir :
+- retrouver tous les morceaux d'un certain style ;
+- afficher les morceaux situés dans une plage de BPM ;
+- connaître les styles présents dans sa bibliothèque ;
+- savoir combien de morceaux il possède par style ;
+- retrouver les morceaux rangés dans un dossier donné ;
+- afficher les grilles et mesures d'un morceau ;
+- repérer les morceaux analysés et ceux qui ne le sont pas encore ;
+- identifier les morceaux les plus rapides ou les plus lents ;
+- connaître le nombre d'analyses écrites par utilisateur ;
+- interroger la base avec des jointures et sous-requêtes plus avancées.
+
